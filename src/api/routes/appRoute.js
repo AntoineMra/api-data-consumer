@@ -1,7 +1,5 @@
-module.exports = (app) => {
-  const Test = require('../controller/controllerTest')
-  let router = require('express').Router()
+const Fine = require('../controllers/controllerFines')
+let router = require('express').Router()
+router.use('/fines', Fine.findAllFines)
 
-  router.get('/test', Test.findAllTest)
-  app.use('/api/v1', router)
-}
+module.exports = router
