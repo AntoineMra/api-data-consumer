@@ -6,21 +6,16 @@ const cors = require('cors')
 require('dotenv').config()
 
 const middlewares = require('./middlewares')
-const api = require('./api/routes/appRoute')
-
 const app = express()
+const swaggerUi = require('swagger-ui-express'),
+  swaggerDocument = require('../swagger.json')
 
 app.use(morgan('dev'))
 app.use(helmet())
 app.use(cors())
 app.use(express.json())
 
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Example api',
-  })
-})
-
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 const Fine = require('./api/controllers/controllerFines')
 
 app.get('/api/v1/fines', Fine.findAllFines)

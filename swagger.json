@@ -1,0 +1,96 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Fines Manager",
+    "description": "API to manage all fines for GDPR infraction",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:5000",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "Fines",
+      "description": "API fines"
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/fines": {
+      "get": {
+        "tags": ["Fines"],
+        "summary": "Get all fines",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+       "post": {
+        "tags": ["Fines"],
+        "parameters": [
+          {
+            "name": "fine",
+            "in": "body",
+            "description": "Fine that we want to create"
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "New fine is created"
+          }
+        }
+      }
+    },
+    "/fine/{id}": {
+      "get": {
+        "tags": ["Fines"],
+        "parameters": [
+            {
+                "name": "id",
+                "in": "path",
+                "required": true,
+                "description": "ID of fine that we want to find",
+                "type": "integer"
+            }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update fine with give ID",
+        "tags": ["Fines"],
+        "parameters": [
+            {
+            "name": "fine",
+            "in": "body",
+            "description": "fine with new values of properties"
+            }
+        ],
+        "responses": {
+            "200": {
+            "description": "fine is updated"
+            }
+        }
+        },
+            "delete": {
+        "summary": "Delete fine with given ID",
+        "tags": ["Fines"],
+        "responses": {
+        "200": {
+            "description": "Fine is deleted"
+        }
+        }
+    }
+    }
+  }
+}
