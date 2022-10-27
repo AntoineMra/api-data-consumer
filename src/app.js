@@ -21,7 +21,13 @@ app.get('/', (req, res) => {
   })
 })
 
-app.use('/api/v1', api)
+const Fine = require('./api/controllers/controllerFines')
+
+app.get('/api/v1/fines', Fine.findAllFines)
+app.get('/api/v1/fines/:id', Fine.findAFine)
+app.post('/api/v1/fines', Fine.addFine)
+app.patch('/api/v1/fines/:id', Fine.updateAFine)
+app.delete('/api/v1/fines/:id', Fine.deleteAFine)
 
 app.use(middlewares.notFound)
 app.use(middlewares.errorHandler)
