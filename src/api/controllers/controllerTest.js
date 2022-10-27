@@ -1,5 +1,3 @@
-exports.findAllClient = (req, res) => {
-  Client.findAll().then((data) => {
-    res.send(data)
-  })
+exports.findAllTest = (req, res) => {
+  // Test
 }
