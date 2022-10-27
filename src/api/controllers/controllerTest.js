@@ -1,3 +1,9 @@
+const MongoClient = require('mongodb').MongoClient
+
+async function testQueryMongo(){
+
+}
+
 exports.findAllTest = (req, res) => {
-  // Test
+  //test accès à la db
 }
