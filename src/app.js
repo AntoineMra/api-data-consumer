@@ -3,6 +3,7 @@ const morgan = require('morgan')
 const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const { uuid } = require('uuidv4')
 
 require('dotenv').config()
 
@@ -21,15 +22,80 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 const Fine = require('./api/controllers/controllerFines')
 const Auth = require('./api/controllers/controllerAuth')
 
-app.get('/api/v1/fines', Fine.findAllFines)
-app.get('/api/v1/fines/:id', Fine.findAFine)
-app.post('/api/v1/fines', Fine.addFine)
-app.patch('/api/v1/fines/:id', Fine.updateAFine)
-app.delete('/api/v1/fines/:id', Fine.deleteAFine)
+const { MongoClient } = require('mongodb')
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PWD}@cluster0.qigutbk.mongodb.net/?retryWrites=true&w=majority`
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
 
-app.post('/api/v1/login', Auth.login)
+client.connect().then(() => {
+  const dataset = client.db('test').collection('dataset')
+  const users = client.db('test').collection('users')
 
-app.use(middlewares.notFound)
-app.use(middlewares.errorHandler)
+  app.get('/api/v1/fines', (req, res) => {
+    dataset
+      .find()
+      .toArray()
+      .then((results) => {
+        res.send({ results })
+      })
+  })
+  app.get('/api/v1/fines/:id', (req, res) => {
+    dataset
+      .find({ ID: parseInt(req.params.id) })
+      .toArray()
+      .then((results) => {
+        res.send({ results })
+      })
+  })
+  app.post('/api/v1/fines', (req, res) => {
+    const newFine = { ...req.body, ID: uuid() }
+    dataset.insertOne(newFine).then((results) => {
+      res.send({ results })
+    })
+  })
+  app.patch('/api/v1/fines/:id', (req, res) => {
+    dataset
+      .updateOne(
+        { ID: parseInt(req.params.id) },
+        {
+          $set: req.body,
+        }
+      )
+      .then((results) => {
+        res.send({ results })
+      })
+  })
+  app.delete('/api/v1/fines/:id', (req, res) => {
+    dataset.deleteOne({ ID: parseInt(req.params.id) }).then((results) => {
+      res.send({ results })
+    })
+  })
+
+  app.post('/api/v1/login', (req, res) => {
+    const user = dataset.users.find(
+      (u) =>
+        u.username === req.body.username && u.password === req.body.password
+    )
+    if (!user) {
+      return res.status(400).json({ message: 'Error. Wrong login or password' })
+    }
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+      },
+      key,
+      { expiresIn: '3 hours' }
+    )
+
+    return res.json({ access_token: token })
+  })
+
+  app.use(middlewares.notFound)
+  app.use(middlewares.errorHandler)
+})
 
 module.exports = app

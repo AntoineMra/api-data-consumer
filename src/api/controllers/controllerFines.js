@@ -1,11 +1,7 @@
-const database = require('../../../database/mongo')
 const { uuid } = require('uuidv4')
-
-console.log(database.dataset)
-
 exports.findAllFines = (req, res) => {
-  res.json({
-    message: database.dataset,
+  dataset.find().forEach((err, results) => {
+    res.status(200).json({ message: results })
   })
 }
 
@@ -28,7 +24,6 @@ exports.updateAFine = (req, res) => {
   let fine = database.dataset.find((fine) => fine.ID == req.params.id)
   const changes = req.body
   const updatedFine = { ...fine, changes }
-  console.log(updatedFine)
   database.dataset = database.dataset.map((fine) => {
     return fine.ID == req.params.id ? updatedFine : fine
   })
@@ -39,12 +34,10 @@ exports.updateAFine = (req, res) => {
 
 exports.deleteAFine = (req, res) => {
   const deleteFine = database.dataset.find((fine) => fine.ID == req.params.id)
-  console.log(database.dataset.length)
   const removedFine = database.dataset.filter((fine) => {
     return fine !== deleteFine
   })
   res.json({
     message: 'Le procès à bien été supprimer',
   })
-  console.log(database.dataset.length)
 }
