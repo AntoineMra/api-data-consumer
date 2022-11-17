@@ -15,6 +15,10 @@
     {
       "name": "Fines",
       "description": "API fines"
+    },
+    {
+      "name": "Login",
+      "description": "Login to Api"
     }
   ],
   "schemes": ["https"],
@@ -91,6 +95,25 @@
         }
         }
     }
+    },
+    "/login": {
+      "post": {
+        "summary": "Login to the Api",
+        "tags": ["Login"],
+        "parameters": [
+          {
+            "name": "Login",
+            "in": "body",
+            "description": ""
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Get the access token for your api"
+          }
+        }
+      }
     }
   }
 }

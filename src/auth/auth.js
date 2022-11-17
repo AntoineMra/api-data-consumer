@@ -10,10 +10,7 @@ function generateAccessToken(user) {
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
-  console.log(token)
-  console.log(token == null)
   if (token == null) return res.sendStatus(401)
-  console.log(key)
 
   jwt.verify(token, key, (err, user) => {
     console.log(err)
