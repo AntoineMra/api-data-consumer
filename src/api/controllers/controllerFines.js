@@ -1,14 +1,16 @@
-let database = require('../../../database/dataset.json')
+const database = require('../../../database/mongo')
 const { uuid } = require('uuidv4')
+
+console.log(database.dataset)
 
 exports.findAllFines = (req, res) => {
   res.json({
-    message: database,
+    message: database.dataset,
   })
 }
 
 exports.findAFine = (req, res) => {
-  const fine = database.find((fine) => fine.ID == req.params.id)
+  const fine = database.dataset.find((fine) => fine.ID == req.params.id)
   res.json({
     message: fine,
   })
@@ -16,18 +18,18 @@ exports.findAFine = (req, res) => {
 
 exports.addFine = (req, res) => {
   const newFine = { ...req.body, ID: uuid() }
-  database.push(newFine)
+  database.dataset.push(newFine)
   res.json({
     message: 'Le nouveau procès à bien été enregistrer',
   })
 }
 
 exports.updateAFine = (req, res) => {
-  let fine = database.find((fine) => fine.ID == req.params.id)
+  let fine = database.dataset.find((fine) => fine.ID == req.params.id)
   const changes = req.body
   const updatedFine = { ...fine, changes }
   console.log(updatedFine)
-  database = database.map((fine) => {
+  database.dataset = database.dataset.map((fine) => {
     return fine.ID == req.params.id ? updatedFine : fine
   })
   res.json({
@@ -36,13 +38,13 @@ exports.updateAFine = (req, res) => {
 }
 
 exports.deleteAFine = (req, res) => {
-  const deleteFine = database.find((fine) => fine.ID == req.params.id)
-  console.log(database.length)
-  const removedFine = database.filter((fine) => {
+  const deleteFine = database.dataset.find((fine) => fine.ID == req.params.id)
+  console.log(database.dataset.length)
+  const removedFine = database.dataset.filter((fine) => {
     return fine !== deleteFine
   })
   res.json({
     message: 'Le procès à bien été supprimer',
   })
-  console.log(database.length)
+  console.log(database.dataset.length)
 }

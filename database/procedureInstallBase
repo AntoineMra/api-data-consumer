@@ -1,8 +1,0 @@
---> avoir le service et le client sur la machine
---> use api-data-consumer
---> inserer un objet bidon
-
-db.courtcase.insert({id : 10000 , Country : "FRANCE"});
-
-
-
