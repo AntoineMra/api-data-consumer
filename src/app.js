@@ -19,8 +19,6 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
-const Fine = require('./api/controllers/controllerFines')
-const Auth = require('./api/controllers/controllerAuth')
 
 const { MongoClient } = require('mongodb')
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PWD}@cluster0.qigutbk.mongodb.net/?retryWrites=true&w=majority`
