@@ -1,53 +1,78 @@
-# Express API Starter
+# API Data Consumer - Documentation 
 
-How to use this template:
+Ce document vise à décrire le fonctionnement de l'API développée par Antoine Marionneau, Antonin Girard et Guillaume GOUY.  
+Dans le but de conseiller les directions d'entreprise, cette API propose d'obtenir et de mettre à jour une liste de procès,  
+dans lesquels des entreprises ont été condamnées pour manquement à la protection des données personnelles. 
 
-```sh
-npx create-express-api --directory my-api-name
-```
+## Les technologies utilisées
 
-Includes API Server utilities:
+La majorité des traitements de cette API repose sur NodeJs.
+Afin de gérér les communications HTTP, le framework ExpressJs est utilisé.
+En terme de persistance, un simple fichier JSON est utilisé. Même si un accès à une base de données Mongo est en cours de développement. 
 
-* [morgan](https://www.npmjs.com/package/morgan)
-  * HTTP request logger middleware for node.js
-* [helmet](https://www.npmjs.com/package/helmet)
-  * Helmet helps you secure your Express apps by setting various HTTP headers. It's not a silver bullet, but it can help!
-* [dotenv](https://www.npmjs.com/package/dotenv)
-  * Dotenv is a zero-dependency module that loads environment variables from a `.env` file into `process.env`
-* [cors](https://www.npmjs.com/package/cors)
-  * CORS is a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
+## Accès
 
-Development utilities:
-
-* [nodemon](https://www.npmjs.com/package/nodemon)
-  * nodemon is a tool that helps develop node.js based applications by automatically restarting the node application when file changes in the directory are detected.
-* [eslint](https://www.npmjs.com/package/eslint)
-  * ESLint is a tool for identifying and reporting on patterns found in ECMAScript/JavaScript code.
-* [jest](https://www.npmjs.com/package/jest)
-  * Jest is a delightful JavaScript Testing Framework with a focus on simplicity.
-* [supertest](https://www.npmjs.com/package/supertest)
-  * HTTP assertions made easy via superagent.
-
-## Setup
+Avant d'aller, plus loin, je donne une exemple de Get afin d'accéder aux ressources:
 
 ```
-npm install
+https://ws-data-consuming.herokuapp.com/api/v1/fines
 ```
 
-## Lint
+
+## Les Features et les controllers associés
+
+### GET
+
+Concrètement, cette API permet de récupérer une liste totale des procès.
 
 ```
-npm run lint
+GET - https://ws-data-consuming.herokuapp.com/api/v1/fines
 ```
 
-## Test
+### Post
+ ```
+ POST - https://ws-data-consuming.herokuapp.com/api/v1/fines/
+```
+
+### Get One
+
+L'accès à cette ressource vous permettra de ne récupérer les données d'un seul projet.
+
+ ```
+ GET - https://ws-data-consuming.herokuapp.com/api/v1/fines/:id
+```
+
+### UPDATE
+
+Cette ressource remplacera le procès précisé avec celui dans le corps de la requête.
 
 ```
-npm test
+Update - https://ws-data-consuming.herokuapp.com/api/v1/fines/:id
 ```
 
-## Development
+### DELETE
 
 ```
-npm run dev
+Delte - https://ws-data-consuming.herokuapp.com/api/v1/fines/:id
 ```
+
+## Format des données
+
+Les procès respectent ce descriptif:
+
+```json
+{
+  "": 0,
+  "ID": 1340,
+  "Country": "GERMANY",
+  "Date": 2021,
+  "Amount": 1000000,
+  "Controller_Processor": "Private individual",
+  "Quoted_Art": 5,
+  "Type": "Non-compliance with general data, processing principles",
+  "polled artcile": 0,
+  "VIOLATED_ARTICLES":  1
+}
+
+```
+Vous disposerez du pays où s'est déroulé le procès, sa date, le montant des peines, le thême des poursuites et le nombre d'zrtciles enfreints.
