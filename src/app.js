@@ -4,7 +4,7 @@ const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const { uuid } = require('uuidv4')
-import { MongoClient } from 'mongodb'
+const mongo = require('mongodb')
 
 require('dotenv').config()
 
@@ -22,7 +22,7 @@ app.use(express.json())
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 const uri = `mongodb+srv://test:GrG8VfNSJgddQ0wl@cluster0.qigutbk.mongodb.net/?retryWrites=true&w=majority`
-const client = new MongoClient(uri, {
+const client = new mongo.MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
