@@ -30,8 +30,9 @@ const client = new mongo.MongoClient(uri, {
 client.connect().then(() => {
   const dataset = client.db('test').collection('dataset')
   const users = client.db('test').collection('users')
+  const auth = require('./auth/auth')
 
-  app.get('/api/v1/fines', (req, res) => {
+  app.get('/api/v1/fines', auth.authenticateToken, (req, res) => {
     dataset
       .find()
       .toArray()
@@ -39,7 +40,7 @@ client.connect().then(() => {
         res.send({ results })
       })
   })
-  app.get('/api/v1/fines/:id', (req, res) => {
+  app.get('/api/v1/fines/:id', auth.authenticateToken, (req, res) => {
     dataset
       .find({ ID: parseInt(req.params.id) })
       .toArray()
@@ -47,13 +48,13 @@ client.connect().then(() => {
         res.send({ results })
       })
   })
-  app.post('/api/v1/fines', (req, res) => {
+  app.post('/api/v1/fines', auth.authenticateToken, (req, res) => {
     const newFine = { ...req.body, ID: uuid() }
     dataset.insertOne(newFine).then((results) => {
       res.send({ results })
     })
   })
-  app.patch('/api/v1/fines/:id', (req, res) => {
+  app.patch('/api/v1/fines/:id', auth.authenticateToken, (req, res) => {
     dataset
       .updateOne(
         { ID: parseInt(req.params.id) },
@@ -65,31 +66,29 @@ client.connect().then(() => {
         res.send({ results })
       })
   })
-  app.delete('/api/v1/fines/:id', (req, res) => {
+  app.delete('/api/v1/fines/:id', auth.authenticateToken, (req, res) => {
     dataset.deleteOne({ ID: parseInt(req.params.id) }).then((results) => {
       res.send({ results })
     })
   })
 
   app.post('/api/v1/login', (req, res) => {
-    const user = dataset.users.find(
-      (u) =>
-        u.username === req.body.username && u.password === req.body.password
-    )
-    if (!user) {
-      return res.status(400).json({ message: 'Error. Wrong login or password' })
-    }
+    users
+      .find({
+        username: req.body.username,
+        password: req.body.password,
+      })
+      .toArray()
+      .then((user) => {
+        if (user.length === 0) {
+          return res
+            .status(400)
+            .json({ message: 'Error. Wrong login or password' })
+        }
+        const token = auth.generateAccessToken(user)
 
-    const token = jwt.sign(
-      {
-        id: user.id,
-        username: user.username,
-      },
-      key,
-      { expiresIn: '3 hours' }
-    )
-
-    return res.json({ access_token: token })
+        res.send({ access_token: token })
+      })
   })
 
   app.use(middlewares.notFound)
